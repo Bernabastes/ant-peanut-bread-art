@@ -5,13 +5,13 @@ import { ProductCard } from "@/components/ProductCard";
 import { Input } from "@/components/ui/input";
 import { catalogQuery, useCatalog, useSettings } from "@/lib/queries";
 
-type ShopSearch = { q?: string; cat?: string; sort?: "name" | "price-asc" | "price-desc" };
+type ShopSearch = { q?: string | undefined; cat?: string | undefined; sort?: "name" | "price-asc" | "price-desc" | undefined };
 
 export const Route = createFileRoute("/shop")({
   validateSearch: (s: Record<string, unknown>): ShopSearch => ({
-    q: typeof s.q === "string" ? s.q : undefined,
-    cat: typeof s.cat === "string" ? s.cat : undefined,
-    sort: s.sort === "name" || s.sort === "price-asc" || s.sort === "price-desc" ? s.sort : undefined,
+    q: typeof s["q"] === "string" ? s["q"] : undefined,
+    cat: typeof s["cat"] === "string" ? s["cat"] : undefined,
+    sort: s["sort"] === "name" || s["sort"] === "price-asc" || s["sort"] === "price-desc" ? s["sort"] : undefined,
   }),
   head: () => ({
     meta: [

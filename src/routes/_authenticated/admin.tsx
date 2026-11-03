@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { LayoutDashboard, LogOut, Package, Settings, ShoppingCart } from "lucide-react";
+import { LayoutDashboard, LogOut, ShoppingCart } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,8 +17,6 @@ export const Route = createFileRoute("/_authenticated/admin")({
 const links = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/admin/orders", label: "Orders", icon: ShoppingCart },
-  { to: "/admin/products", label: "Products", icon: Package },
-  { to: "/admin/settings", label: "Settings", icon: Settings },
 ] as const;
 
 function AdminLayout() {
@@ -29,7 +27,7 @@ function AdminLayout() {
     await qc.cancelQueries();
     qc.clear();
     await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
+    navigate({ to: "/auth", search: { redirect: undefined }, replace: true });
   }
   if (!isAdmin)
     return (
