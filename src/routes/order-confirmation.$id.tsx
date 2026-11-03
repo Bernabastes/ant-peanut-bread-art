@@ -5,7 +5,7 @@ import { OrderView, type PublicOrder } from "@/components/OrderView";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/order-confirmation/$id")({
-  validateSearch: (s: Record<string, unknown>) => ({ t: typeof s.t === "string" ? s.t : "" }),
+  validateSearch: (s: Record<string, unknown>) => ({ t: typeof s["t"] === "string" ? s["t"] : "" }),
   head: () => ({
     meta: [
       { title: "Order Confirmed — Ant Peanut" },

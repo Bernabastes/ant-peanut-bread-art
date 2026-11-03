@@ -26,6 +26,7 @@ export function SiteHeader({ announcement }: { announcement: string }) {
       return () => clearTimeout(t);
     }
     prev.current = count;
+    return undefined;
   }, [count]);
   useEffect(() => {
     prev.current = count;
