@@ -23,7 +23,6 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
-  const [mode, setMode] = useState<"in" | "up">("in");
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
@@ -36,21 +35,11 @@ function AuthPage() {
     const password = String(f.get("password"));
     setBusy(true);
     setMsg("");
-    if (mode === "in") {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      setBusy(false);
-      if (error) return setMsg(error.message);
-      const path = back && back.startsWith("/") && !back.startsWith("//") ? back : "/admin";
-      navigate({ to: path });
-    } else {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { emailRedirectTo: `${window.location.origin}/admin` },
-      });
-      setBusy(false);
-      setMsg(error ? error.message : "Check your email to confirm your account, then sign in.");
-    }
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setBusy(false);
+    if (error) return setMsg(error.message);
+    const path = back && back.startsWith("/") && !back.startsWith("//") ? back : "/admin";
+    navigate({ to: path });
   }
 
   return (
@@ -60,9 +49,7 @@ function AuthPage() {
         className="w-full max-w-sm space-y-4 rounded-3xl bg-card p-8 shadow-lift"
       >
         <Logo />
-        <h1 className="text-2xl font-bold">
-          {mode === "in" ? "Owner sign in" : "Create owner account"}
-        </h1>
+        <h1 className="text-2xl font-bold">Owner sign in</h1>
         <div>
           <Label htmlFor="email">Email</Label>
           <Input id="email" name="email" type="email" required />
@@ -73,15 +60,8 @@ function AuthPage() {
         </div>
         {msg && <p className="text-sm text-muted-foreground">{msg}</p>}
         <Button variant="brand" className="w-full" disabled={busy}>
-          {mode === "in" ? "Sign in" : "Create account"}
+          Sign in
         </Button>
-        <button
-          type="button"
-          onClick={() => setMode(mode === "in" ? "up" : "in")}
-          className="w-full text-center text-sm underline"
-        >
-          {mode === "in" ? "First time? Create the owner account" : "Have an account? Sign in"}
-        </button>
       </form>
     </div>
   );
