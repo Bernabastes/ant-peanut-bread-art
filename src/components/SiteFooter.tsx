@@ -53,7 +53,7 @@ export function SiteFooter({ settings }: { settings: Settings }) {
             </li>
             <li>
               <Link to="/delivery-policy" className={a}>
-                Delivery & collection
+                Local pickup
               </Link>
             </li>
             <li>

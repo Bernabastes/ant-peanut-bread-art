@@ -20,9 +20,6 @@ const fields = [
   ["email", "Email"],
   ["address", "Address"],
   ["instagram_url", "Instagram URL"],
-  ["delivery_fee_major", "Delivery fee"],
-  ["delivery_info", "Delivery information"],
-  ["delivery_regions", "Delivery areas"],
   ["pickup_location", "Pickup location"],
   ["pickup_instructions", "Pickup instructions"],
 ] as const;
@@ -38,9 +35,6 @@ const emptyForm: SettingsForm = {
   email: "",
   address: "",
   instagram_url: "",
-  delivery_fee_major: "",
-  delivery_info: "",
-  delivery_regions: "",
   pickup_location: "",
   pickup_instructions: "",
   story: "",
@@ -57,15 +51,11 @@ function SettingsPage() {
     },
   });
   const [form, setForm] = useState<SettingsForm>(emptyForm);
-  const [delivery, setDelivery] = useState(true);
-  const [pickup, setPickup] = useState(true);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (!data) return;
     const s = data as Settings;
-    setDelivery(s.delivery_enabled);
-    setPickup(s.pickup_enabled);
     setForm({
       business_name: s.business_name ?? "",
       announcement: s.announcement ?? "",
@@ -75,9 +65,6 @@ function SettingsPage() {
       email: s.email ?? "",
       address: s.address ?? "",
       instagram_url: s.instagram_url ?? "",
-      delivery_fee_major: (s.delivery_fee_cents / 100).toFixed(2),
-      delivery_info: s.delivery_info ?? "",
-      delivery_regions: s.delivery_regions ?? "",
       pickup_location: s.pickup_location ?? "",
       pickup_instructions: s.pickup_instructions ?? "",
       story: s.story ?? "",
@@ -86,15 +73,6 @@ function SettingsPage() {
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
-    const fee = Math.round(Number(form.delivery_fee_major) * 100);
-    if (!Number.isFinite(fee) || fee < 0) {
-      toast.error("Enter a valid delivery fee.");
-      return;
-    }
-    if (!delivery && !pickup) {
-      toast.error("Enable delivery, pickup, or both.");
-      return;
-    }
     const patch = {
       business_name: form.business_name.trim(),
       announcement: form.announcement.trim(),
@@ -103,11 +81,9 @@ function SettingsPage() {
       phone: form.phone.trim() || null,
       email: form.email.trim() || null,
       address: form.address.trim() || null,
-      delivery_enabled: delivery,
-      pickup_enabled: pickup,
-      delivery_fee_cents: fee,
-      delivery_info: form.delivery_info.trim(),
-      delivery_regions: form.delivery_regions.trim() || null,
+      delivery_enabled: false,
+      pickup_enabled: true,
+      delivery_fee_cents: 0,
       pickup_location: form.pickup_location.trim() || null,
       pickup_instructions: form.pickup_instructions.trim() || null,
       story: form.story,
@@ -151,11 +127,7 @@ function SettingsPage() {
         {fields.map(([key, label]) => (
           <div
             key={key}
-            className={
-              key === "announcement" || key === "delivery_info" || key === "address"
-                ? "sm:col-span-2"
-                : ""
-            }
+            className={key === "announcement" || key === "address" ? "sm:col-span-2" : ""}
           >
             <Label htmlFor={key}>{label}</Label>
             <Input
@@ -166,18 +138,6 @@ function SettingsPage() {
             />
           </div>
         ))}
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={delivery}
-            onChange={(e) => setDelivery(e.target.checked)}
-          />{" "}
-          Home delivery
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={pickup} onChange={(e) => setPickup(e.target.checked)} />{" "}
-          Local pickup
-        </label>
         <div className="sm:col-span-2">
           <Label htmlFor="story">Our story</Label>
           <Textarea

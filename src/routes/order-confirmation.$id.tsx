@@ -73,8 +73,10 @@ function Confirm() {
         Thank you, {o.customer_name.split(" ")[0]}!
       </h1>
       <p className="mt-3 text-muted-foreground">
-        Your order has been received. We'll contact you to confirm. Pay in person when you{" "}
-        {o.fulfillment === "delivery" ? "receive it" : "collect it"}.
+        Your order has been received. We'll contact you to confirm.{" "}
+        {o.fulfillment === "delivery"
+          ? "Please pay in person when your order is delivered."
+          : "Please pay in person when you collect it."}
       </p>
       <div className="mt-10">
         <OrderView o={o} />

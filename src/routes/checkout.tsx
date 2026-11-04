@@ -30,18 +30,14 @@ function Checkout() {
   const { items, clear } = useCart();
   const { rows, variants } = useLiveCart();
   const navigate = useNavigate();
-  const [ful, setFul] = useState<"delivery" | "pickup">(
-    settings.delivery_enabled ? "delivery" : "pickup",
-  );
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const key = useRef(crypto.randomUUID());
-  const fee = ful === "delivery" ? settings.delivery_fee_cents : 0;
-  const t = cartTotals(items, variants, fee);
+  const t = cartTotals(items, variants, 0);
   const problems = rows.some(
     (r) => !r.variant || !r.variant.is_available || r.variant.stock < r.item.quantity,
   );
-  const noFulfilment = !settings.delivery_enabled && !settings.pickup_enabled;
+  const noFulfilment = !settings.pickup_enabled;
   const m = (c: number) => formatMoney(c, settings.currency);
 
   if (items.length === 0)
@@ -62,7 +58,6 @@ function Checkout() {
     const g = (k: string) => String(f.get(k) ?? "").trim();
     if (!g("customer_name") || !g("phone"))
       return setErr("Please enter your name and phone number.");
-    if (ful === "delivery" && !g("address")) return setErr("Please enter your delivery address.");
     setBusy(true);
     const { data, error } = await supabase.rpc("place_order", {
       payload: {
@@ -70,10 +65,7 @@ function Checkout() {
         customer_name: g("customer_name"),
         phone: g("phone"),
         email: g("email"),
-        fulfillment: ful,
-        address: g("address"),
-        city: g("city"),
-        delivery_instructions: g("delivery_instructions"),
+        fulfillment: "pickup",
         customer_note: g("customer_note"),
         items: items.map((i) => ({ variant_id: i.variantId, quantity: i.quantity })),
       },
@@ -112,53 +104,13 @@ function Checkout() {
           </div>
         </section>
         <section className="space-y-4 rounded-3xl bg-card p-6 shadow-soft">
-          <h2 className="text-2xl font-semibold">Delivery or pickup</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {settings.delivery_enabled && (
-              <button
-                type="button"
-                onClick={() => setFul("delivery")}
-                className={`rounded-2xl border-2 p-4 text-left ${ful === "delivery" ? "border-chocolate bg-accent" : ""}`}
-              >
-                <div className="font-semibold">Home delivery</div>
-                <div className="text-sm text-muted-foreground">
-                  {settings.delivery_fee_cents ? m(settings.delivery_fee_cents) : "Free"} ·{" "}
-                  {settings.delivery_info}
-                </div>
-              </button>
-            )}
-            {settings.pickup_enabled && (
-              <button
-                type="button"
-                onClick={() => setFul("pickup")}
-                className={`rounded-2xl border-2 p-4 text-left ${ful === "pickup" ? "border-chocolate bg-accent" : ""}`}
-              >
-                <div className="font-semibold">Local pickup</div>
-                <div className="text-sm text-muted-foreground">
-                  {settings.pickup_location || "Location shared when we confirm your order."}
-                </div>
-              </button>
-            )}
-          </div>
-          {ful === "delivery" ? (
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="sm:col-span-2">
-                <Label htmlFor="a">Delivery address *</Label>
-                <Input id="a" name="address" required />
-              </div>
-              <div>
-                <Label htmlFor="c">City / area</Label>
-                <Input id="c" name="city" />
-              </div>
-              <div>
-                <Label htmlFor="di">Delivery instructions</Label>
-                <Input id="di" name="delivery_instructions" />
-              </div>
-            </div>
-          ) : (
-            settings.pickup_instructions && (
-              <p className="text-sm text-muted-foreground">{settings.pickup_instructions}</p>
-            )
+          <h2 className="text-2xl font-semibold">Local pickup</h2>
+          <p className="text-sm text-muted-foreground">
+            {settings.pickup_location ||
+              "Pickup location will be shared when we confirm your order."}
+          </p>
+          {settings.pickup_instructions && (
+            <p className="text-sm text-muted-foreground">{settings.pickup_instructions}</p>
           )}
           <div>
             <Label htmlFor="note">Note (optional)</Label>
@@ -170,7 +122,7 @@ function Checkout() {
           <div className="mt-4 rounded-2xl border-2 border-chocolate bg-accent p-4">
             <div className="font-semibold">Pay in Person</div>
             <div className="text-sm text-muted-foreground">
-              Place your order online and pay when you receive your order or collect it.
+              Place your order online and pay when you collect it.
             </div>
           </div>
         </section>
@@ -194,8 +146,8 @@ function Checkout() {
             <dd>{m(t.subtotal)}</dd>
           </div>
           <div className="flex justify-between">
-            <dt>{ful === "delivery" ? "Delivery" : "Pickup"}</dt>
-            <dd>{m(fee)}</dd>
+            <dt>Local pickup</dt>
+            <dd>No fee</dd>
           </div>
           <div className="flex justify-between text-lg font-semibold">
             <dt>Total due</dt>
@@ -220,7 +172,7 @@ function Checkout() {
             role="alert"
             className="mt-4 rounded-xl bg-destructive/10 p-3 text-sm text-destructive"
           >
-            Delivery and pickup are both turned off. The shop can't accept this order yet.
+            Local pickup is currently unavailable. Please contact us before placing an order.
           </p>
         )}
         {err && (

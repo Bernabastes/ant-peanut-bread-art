@@ -1,6 +1,6 @@
 # Ant Peanut
 
-Artisan peanut butter shop. Customers browse jars, choose a size, and place an order online. Payment is collected in person on delivery or pickup. There is no card checkout.
+Artisan peanut butter shop. Customers browse jars, choose a size, and place an order online for local pickup. Payment is collected in person. There is no card checkout.
 
 The homepage hero is an illustration of peanut butter landing on toast. To use real footage, add a film at `public/videos/peanut-butter-hero.mp4` (landscape, about 8 seconds, no text or logo) and set `VITE_HERO_VIDEO_URL=/videos/peanut-butter-hero.mp4`. Until that variable is configured, the homepage displays the illustrated animation and does not request a missing video.
 
@@ -13,9 +13,9 @@ npm i
 npm run dev
 ```
 
-Copy `.env` with `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, and the matching `VITE_` variables. Apply the database scripts in order in the Supabase SQL editor: `drizzle/migrations/0000_migration.sql`, `drizzle/migrations/0001_admin_extras.sql`, `drizzle/migrations/0002_atomic_order_admin.sql`, `drizzle/migrations/0003_creamy_etb_admin.sql`, `drizzle/migrations/0004_contact_and_story.sql`, `drizzle/migrations/0005_step_by_step_story.sql`, then `drizzle/migrations/0006_security_hardening.sql`. The first user created in Supabase Auth becomes the administrator if no admin exists. Create the owner's account through Supabase Auth, verify admin access, and disable public sign-ups there. The app's `/auth` page is sign-in only.
+Copy `.env` with `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, and the matching `VITE_` variables. Apply the database scripts in order in the Supabase SQL editor: `drizzle/migrations/0000_migration.sql`, `drizzle/migrations/0001_admin_extras.sql`, `drizzle/migrations/0002_atomic_order_admin.sql`, `drizzle/migrations/0003_creamy_etb_admin.sql`, `drizzle/migrations/0004_contact_and_story.sql`, `drizzle/migrations/0005_step_by_step_story.sql`, `drizzle/migrations/0006_security_hardening.sql`, then `drizzle/migrations/0007_local_pickup_only.sql`. The first user created in Supabase Auth becomes the administrator if no admin exists. Create the owner's account through Supabase Auth, verify admin access, and disable public sign-ups there. The app's `/auth` page is sign-in only.
 
-For an existing database, apply `0002_atomic_order_admin.sql` if it has not already been applied, then `0003_creamy_etb_admin.sql`, `0004_contact_and_story.sql`, `0005_step_by_step_story.sql`, and `0006_security_hardening.sql`. These migrations set the contact details and story shown on the site and tighten database function permissions. `0003` removes the crunchy product and non-500 g sizes, sets the store currency to Ethiopian birr, and grants the oldest existing account admin access only if no admin exists. Existing order records remain intact. Historical orders keep their original currency; update the current product price and delivery fee in Admin → Products and Admin → Settings to the real birr amounts before taking orders. The photo-upload bucket and Instagram setting are added by `0001_admin_extras.sql`.
+For an existing database, apply `0002_atomic_order_admin.sql` if it has not already been applied, then `0003_creamy_etb_admin.sql`, `0004_contact_and_story.sql`, `0005_step_by_step_story.sql`, `0006_security_hardening.sql`, and `0007_local_pickup_only.sql`. These migrations set the contact details and story shown on the site, tighten database function permissions, and make local pickup the only fulfillment option. `0003` removes the crunchy product and non-500 g sizes, sets the store currency to Ethiopian birr, and grants the oldest existing account admin access only if no admin exists. `0007` disables delivery and rejects new non-pickup orders; historical delivery orders remain unchanged. The photo-upload bucket and Instagram setting are added by `0001_admin_extras.sql`.
 
 If an administrator already exists but your owner account still cannot access `/admin`, run this in the Supabase SQL Editor after replacing the email with the exact sign-in email:
 
@@ -33,11 +33,11 @@ If Admin → Orders reports that `admin_update_order` could not be found, run `d
 
 Before launch:
 
-- Apply all database migrations through `0006_security_hardening.sql`.
+- Apply all database migrations through `0007_local_pickup_only.sql`.
 - In Supabase Auth, create and test the owner's admin account, then disable public sign-ups. Enable email confirmation and multi-factor authentication for administrator accounts where available.
 - Set the production site URL and allowed redirect URLs in Supabase Auth to the real domain; remove preview or temporary domains you no longer use.
 - Configure deployment secrets on the hosting provider. The publishable key may be used by the browser; never expose `SUPABASE_SERVICE_ROLE_KEY` or a Supabase secret key in a `VITE_` variable, client bundle, or public repository.
-- Set real ETB prices, stock, delivery fees, contact details, and fulfillment instructions in Admin before accepting orders.
+- Set real ETB prices, stock, pickup location and instructions, and contact details in Admin before accepting orders.
 - Test a real sign-in, a rejected sign-in, a test order, order status lookup, and an admin update on the deployed URL.
 
 The public storefront is `/`. Admin sign-in is `/auth`, and the protected admin pages are under `/admin` (for example `/admin/orders`). They use the same domain; the admin pages are protected by Supabase authentication, database role checks, and row-level security, not by a separate deployment or by hiding the URL. Email is not configured: new orders show up in `/admin`, and the site does not claim an email was sent.

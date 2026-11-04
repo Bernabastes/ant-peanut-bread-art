@@ -16,7 +16,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Rich, creamy artisan peanut butter in jars. Order online and pay in person on delivery or pickup.",
+          "Rich, creamy artisan peanut butter in jars. Order online and pay in person when you pick up.",
       },
       { property: "og:title", content: "Ant Peanut — Goodness You Can Taste" },
       {
@@ -190,11 +190,8 @@ function Home() {
           <div className="mt-14 grid gap-6 md:grid-cols-3">
             {[
               ["Choose Your Favorite", "Explore the available peanut butter jars and sizes."],
-              [
-                "Place Your Order",
-                "Add products to your cart and enter your contact and delivery details.",
-              ],
-              ["Pay in Person", "Pay when your order is delivered or when you collect it."],
+              ["Place Your Order", "Add products to your cart and enter your contact details."],
+              ["Local Pickup", "Collect your order and pay in person."],
             ].map(([t, d], i) => (
               <div key={t} className="rounded-3xl bg-card p-8 shadow-soft">
                 <span className="font-display text-6xl font-bold text-honey">0{i + 1}</span>

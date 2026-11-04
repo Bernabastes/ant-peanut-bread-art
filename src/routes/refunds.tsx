@@ -35,8 +35,8 @@ function Page() {
       </p>
       <h2>After payment in person</h2>
       <p>
-        Payment is collected when the order is delivered or picked up. If a jar is damaged on
-        arrival, contact us the same day so we can decide on a replacement or refund.
+        Payment is collected when the order is picked up. If a jar is damaged when you collect it,
+        contact us the same day so we can decide on a replacement or refund.
       </p>
       <h2>Food products</h2>
       <p>

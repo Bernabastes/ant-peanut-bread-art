@@ -75,7 +75,7 @@ function Shop() {
     <div className="mx-auto max-w-7xl px-4 py-16 md:px-8">
       <h1 className="text-5xl font-bold md:text-6xl">The Shop</h1>
       <p className="mt-3 text-lg text-muted-foreground">
-        Creamy peanut butter in a 500 g jar. Pay in person when you receive it.
+        Creamy peanut butter in a 500 g jar. Pay in person when you collect it.
       </p>
 
       <div className="mt-10 flex flex-col gap-4 md:flex-row md:flex-wrap md:items-center md:justify-between">

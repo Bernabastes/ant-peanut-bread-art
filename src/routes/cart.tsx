@@ -151,18 +151,12 @@ function CartPage() {
             <dd className="font-semibold">{formatMoney(t.subtotal, settings.currency)}</dd>
           </div>
           <div className="flex justify-between text-muted-foreground">
-            <dt>Delivery</dt>
-            <dd>
-              {settings.delivery_enabled
-                ? settings.delivery_fee_cents
-                  ? `${formatMoney(settings.delivery_fee_cents, settings.currency)} if delivered`
-                  : "Free"
-                : "Pickup only"}
-            </dd>
+            <dt>Fulfilment</dt>
+            <dd>Local pickup · No fee</dd>
           </div>
         </dl>
         <p className="mt-6 rounded-2xl bg-accent p-4 text-xs">
-          Pay in person when you receive or collect your order.
+          Pay in person when you collect your order.
         </p>
         <Button
           variant="honey"

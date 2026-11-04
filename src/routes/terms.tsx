@@ -24,7 +24,7 @@ function Page() {
     <InfoPage title="Terms and Conditions" draft>
       <p>
         Orders placed online are requests until confirmed by {s.business_name}. Prices are shown in{" "}
-        {s.currency}. Payment is made in person on delivery or collection.
+        {s.currency}. Orders are collected locally, with payment made in person at pickup.
       </p>
       <h2>Cancellations and refunds</h2>
       <p>

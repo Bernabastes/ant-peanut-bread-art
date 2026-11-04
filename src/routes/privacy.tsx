@@ -24,11 +24,11 @@ function Page() {
     <InfoPage title="Privacy Policy" draft>
       <p>
         We collect only the details needed to fulfil your order: your name, phone number, optional
-        email, and delivery address if you choose delivery.
+        email, and any information needed to arrange local pickup.
       </p>
       <p>
-        We use this information to confirm, prepare and deliver your order, and to contact you about
-        it. We do not sell your information.
+        We use this information to confirm and prepare your order, arrange local pickup, and contact
+        you about it. We do not sell your information.
       </p>
       <p>To ask about or delete your data, contact us using the details on the Contact page.</p>
     </InfoPage>

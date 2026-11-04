@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { Minus, Plus, Truck } from "lucide-react";
+import { MapPin, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -180,22 +180,12 @@ function ProductPage() {
         </div>
 
         <div className="mt-8 flex gap-3 rounded-2xl bg-accent p-5 text-sm">
-          <Truck className="h-5 w-5 shrink-0 text-primary" />
+          <MapPin className="h-5 w-5 shrink-0 text-primary" />
           <div>
-            {settings.delivery_enabled && (
-              <p>
-                Home delivery
-                {settings.delivery_fee_cents
-                  ? ` · ${formatMoney(settings.delivery_fee_cents, settings.currency)}`
-                  : ""}
-                . {settings.delivery_info}
-              </p>
-            )}
-            {settings.pickup_enabled && (
-              <p className="mt-1">
-                Pickup available{settings.pickup_location ? ` at ${settings.pickup_location}` : ""}.
-              </p>
-            )}
+            <p>
+              Local pickup available
+              {settings.pickup_location ? ` at ${settings.pickup_location}` : ""}.
+            </p>
             <p className="mt-1 font-medium">Pay in person — no card needed.</p>
           </div>
         </div>
