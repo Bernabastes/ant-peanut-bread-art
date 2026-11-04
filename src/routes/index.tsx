@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowDown, HandHeart, Package, ShoppingBasket, Wheat } from "lucide-react";
+import { ArrowDown, HandHeart, Package, Quote, ShoppingBasket, Wheat } from "lucide-react";
 import { HeroVisual } from "@/components/HeroAnimation";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
@@ -42,6 +42,17 @@ const highlights = [
   },
   { icon: Package, title: "Carefully Packed", text: "Sealed in jars, ready to enjoy." },
   { icon: ShoppingBasket, title: "Easy Local Ordering", text: "Order online, pay in person." },
+];
+
+const reviews = [
+  {
+    name: "Yafet",
+    text: "I found the peanut butter absolutely delicious. It has a wonderful taste, and to me it was just perfect—such a lovely peanut butter to enjoy.",
+  },
+  {
+    name: "Asefu",
+    text: "This peanut butter was a real delight. The flavor was delicious, and I thought it was perfect in every way for my taste.",
+  },
 ];
 
 function Home() {
@@ -195,12 +206,19 @@ function Home() {
         </div>
       </section>
 
-      {/* REVIEWS placeholder */}
-      <section className="mx-auto max-w-3xl px-4 py-24 text-center">
-        <h2 className="text-4xl font-bold">What Our Customers Say</h2>
-        <div className="mt-8 rounded-3xl border-2 border-dashed p-10 text-muted-foreground">
-          Customer reviews will appear here once they've been collected. We only share real
-          feedback.
+      {/* CUSTOMER FEEDBACK */}
+      <section className="mx-auto max-w-7xl px-4 py-24 md:px-8">
+        <h2 className="text-center text-4xl font-bold md:text-5xl">What Our Customers Say</h2>
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
+          {reviews.map((review) => (
+            <figure key={review.name} className="rounded-3xl bg-card p-8 shadow-soft md:p-10">
+              <Quote aria-hidden="true" className="h-8 w-8 text-honey" />
+              <blockquote className="mt-5 text-lg leading-relaxed text-muted-foreground">
+                “{review.text}”
+              </blockquote>
+              <figcaption className="mt-6 font-semibold text-chocolate">{review.name}</figcaption>
+            </figure>
+          ))}
         </div>
       </section>
 
