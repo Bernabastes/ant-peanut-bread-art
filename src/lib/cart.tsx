@@ -46,10 +46,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
       add: (item) =>
         setItems((cur) => {
           const ex = cur.find((i) => i.variantId === item.variantId);
-          if (ex) return cur.map((i) => (i.variantId === item.variantId ? { ...i, quantity: Math.min(50, i.quantity + item.quantity) } : i));
+          if (ex)
+            return cur.map((i) =>
+              i.variantId === item.variantId
+                ? { ...i, quantity: Math.min(50, i.quantity + item.quantity) }
+                : i,
+            );
           return [...cur, item];
         }),
-      setQty: (id, qty) => setItems((cur) => cur.map((i) => (i.variantId === id ? { ...i, quantity: Math.max(1, Math.min(50, qty)) } : i))),
+      setQty: (id, qty) =>
+        setItems((cur) =>
+          cur.map((i) =>
+            i.variantId === id ? { ...i, quantity: Math.max(1, Math.min(50, qty)) } : i,
+          ),
+        ),
       remove: (id) => setItems((cur) => cur.filter((i) => i.variantId !== id)),
       clear: () => setItems([]),
     }),

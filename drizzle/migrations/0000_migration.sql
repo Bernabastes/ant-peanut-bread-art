@@ -16,6 +16,7 @@ create policy "own roles readable" on public.user_roles for select to authentica
 create or replace function public.handle_first_admin()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
+  perform pg_advisory_xact_lock(7351042);
   if not exists (select 1 from public.user_roles where role = 'admin') then
     insert into public.user_roles(user_id, role) values (new.id, 'admin');
   end if;
@@ -61,11 +62,11 @@ create table public.settings (
   id int primary key default 1 check (id = 1),
   business_name text not null default 'Ant Peanut',
   announcement text not null default 'Made with love. Packed with goodness. Delivered to your door.',
-  currency text not null default 'KES',
-  country text not null default 'Kenya',
-  phone text,
+  currency text not null default 'ETB',
+  country text not null default 'Ethiopia',
+  phone text default '+251923139185',
   email text,
-  address text,
+  address text default 'Jemo, Addis Ababa, Ethiopia',
   delivery_enabled boolean not null default true,
   pickup_enabled boolean not null default true,
   delivery_fee_cents int not null default 0,
@@ -73,10 +74,10 @@ create table public.settings (
   delivery_regions text,
   pickup_location text,
   pickup_instructions text,
-  story text not null default 'Our story is coming soon. The owner will share who we are, how we make our peanut butter, and why we care.',
+  story text not null default 'We make our peanut butter at home, using our machine to grind the peanuts carefully and neatly into a smooth, creamy spread. We keep it pure: only peanuts go into the jar. We do not add sugar, water, or anything else—just pure peanuts, made creamy.',
   updated_at timestamptz not null default now()
 );
-insert into public.settings (id) values (1);
+insert into public.settings (id, phone, address) values (1, '+251923139185', 'Jemo, Addis Ababa, Ethiopia');
 
 create table public.orders (
   id uuid primary key default gen_random_uuid(),
@@ -231,15 +232,11 @@ returns jsonb language sql stable security definer set search_path = public as $
 $$;
 grant execute on function public.get_order_public(text, text) to anon, authenticated;
 
-insert into public.categories(name, slug, sort_order) values ('Creamy','creamy',1),('Crunchy','crunchy',2);
-insert into public.products(category_id, name, slug, short_description, description, texture, is_featured, sort_order, image_url) values
-((select id from public.categories where slug='creamy'), 'Classic Creamy Peanut Butter', 'classic-creamy-peanut-butter', 'Smooth, rich peanut butter for everyday enjoyment.', 'Smooth, rich peanut butter for everyday enjoyment. Spread it on warm toast, swirl it into oats, or enjoy it straight from the spoon.', 'Creamy', true, 1, '/images/jar-creamy.jpg'),
-((select id from public.categories where slug='crunchy'), 'Crunchy Peanut Butter', 'crunchy-peanut-butter', 'Peanut butter with a satisfying crunchy texture.', 'Peanut butter with a satisfying crunchy texture in every bite.', 'Crunchy', true, 2, '/images/jar-crunchy.jpg');
+insert into public.categories(name, slug, sort_order) values ('Creamy','creamy',1);
+insert into public.products(category_id, name, slug, short_description, description, texture, is_published, is_featured, sort_order, image_url) values
+((select id from public.categories where slug='creamy'), 'Classic Creamy Peanut Butter', 'classic-creamy-peanut-butter', 'Smooth, rich peanut butter for everyday enjoyment.', 'Smooth, rich peanut butter for everyday enjoyment. Spread it on warm toast, swirl it into oats, or enjoy it straight from the spoon.', 'Creamy', false, true, 1, '/images/jar-creamy.svg');
 insert into public.product_variants(product_id, label, price_cents, stock, sort_order) values
-((select id from public.products where slug='classic-creamy-peanut-butter'), '250 g', 50000, 20, 1),
-((select id from public.products where slug='classic-creamy-peanut-butter'), '500 g', 90000, 20, 2),
-((select id from public.products where slug='crunchy-peanut-butter'), '250 g', 50000, 20, 1),
-((select id from public.products where slug='crunchy-peanut-butter'), '500 g', 90000, 20, 2);
+((select id from public.products where slug='classic-creamy-peanut-butter'), '500 g', 90000, 0, 1);
 
 create policy "admin read product images" on storage.objects for select to authenticated using (bucket_id = 'product-images' and public.has_role(auth.uid(),'admin'));
 create policy "admin upload product images" on storage.objects for insert to authenticated with check (bucket_id = 'product-images' and public.has_role(auth.uid(),'admin'));

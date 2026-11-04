@@ -1,8 +1,59 @@
-# Ant Peanut Bread Art
+# Ant Peanut
 
-Brand name Ant Peanut and if the video doesnt work dont finish my free credit and just make i a graphics like a penaut dropping smoothly in a slice bread or some one poring it to the slice of bread and properly painting it in the slice
+Artisan peanut butter shop. Customers browse jars, choose a size, and place an order online. Payment is collected in person on delivery or pickup. There is no card checkout.
+
+The homepage hero is an illustration of peanut butter landing on toast. To use real footage, add a film at `public/videos/peanut-butter-hero.mp4` (landscape, about 8 seconds, no text or logo) and set `VITE_HERO_VIDEO_URL=/videos/peanut-butter-hero.mp4`. Until that variable is configured, the homepage displays the illustrated animation and does not request a missing video.
+
+The store sells creamy peanut butter in 500 g jars, priced in Ethiopian birr (ETB). Jar pictures in `public/images/` are illustrated placeholders. Replace them from Admin → Products with photographs of your real jar. Sample prices already stored in the database are placeholders too. Example products start unpublished and with zero stock; set the real price, stock, product information, and photo in Admin → Products before publishing or taking orders.
+
+## Run locally
+
+```sh
+npm i
+npm run dev
+```
+
+Copy `.env` with `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, and the matching `VITE_` variables. Apply the database scripts in order in the Supabase SQL editor: `drizzle/migrations/0000_migration.sql`, `drizzle/migrations/0001_admin_extras.sql`, `drizzle/migrations/0002_atomic_order_admin.sql`, `drizzle/migrations/0003_creamy_etb_admin.sql`, `drizzle/migrations/0004_contact_and_story.sql`, `drizzle/migrations/0005_step_by_step_story.sql`, then `drizzle/migrations/0006_security_hardening.sql`. The first person to create an account at `/auth` becomes the administrator, so create the owner's account first and disable public sign-ups in Supabase afterward.
+
+For an existing database, apply `0002_atomic_order_admin.sql` if it has not already been applied, then `0003_creamy_etb_admin.sql`, `0004_contact_and_story.sql`, `0005_step_by_step_story.sql`, and `0006_security_hardening.sql`. These migrations set the contact details and story shown on the site and tighten database function permissions. `0003` removes the crunchy product and non-500 g sizes, sets the store currency to Ethiopian birr, and grants the oldest existing account admin access only if no admin exists. Existing order records remain intact. Historical orders keep their original currency; update the current product price and delivery fee in Admin → Products and Admin → Settings to the real birr amounts before taking orders. The photo-upload bucket and Instagram setting are added by `0001_admin_extras.sql`.
+
+If an administrator already exists but your owner account still cannot access `/admin`, run this in the Supabase SQL Editor after replacing the email with the exact sign-in email:
+
+```sql
+insert into public.user_roles (user_id, role)
+select id, 'admin'::public.app_role
+from auth.users
+where lower(email) = lower('YOUR_SIGN_IN_EMAIL')
+on conflict (user_id, role) do nothing;
+```
+
+If Admin → Orders reports that `admin_update_order` could not be found, run `drizzle/migrations/0002_atomic_order_admin.sql` in the Supabase SQL Editor. The script asks PostgREST to reload its schema cache; if the error remains after it completes, run `NOTIFY pgrst, 'reload schema';` in the SQL Editor and retry.
+
+## Deploy
+
+Before launch:
+
+- Apply all database migrations through `0006_security_hardening.sql`.
+- In Supabase Auth, create and test the owner's admin account, then disable public sign-ups. Enable email confirmation and multi-factor authentication for administrator accounts where available.
+- Set the production site URL and allowed redirect URLs in Supabase Auth to the real domain; remove preview or temporary domains you no longer use.
+- Configure deployment secrets on the hosting provider. The publishable key may be used by the browser; never expose `SUPABASE_SERVICE_ROLE_KEY` or a Supabase secret key in a `VITE_` variable, client bundle, or public repository.
+- Set real ETB prices, stock, delivery fees, contact details, and fulfillment instructions in Admin before accepting orders.
+- Test a real sign-in, a rejected sign-in, a test order, order status lookup, and an admin update on the deployed URL.
+
+The public storefront is `/`. Admin sign-in is `/auth`, and the protected admin pages are under `/admin` (for example `/admin/orders`). They use the same domain; the admin pages are protected by Supabase authentication, database role checks, and row-level security, not by a separate deployment or by hiding the URL. Email is not configured: new orders show up in `/admin`, and the site does not claim an email was sent.
 
 This project was built with [Lovable](https://lovable.dev).
+
+### Deploy on Cloudflare Workers
+
+This project builds with Nitro's Cloudflare Workers preset. In Cloudflare, go to **Workers & Pages → Create → Connect to Git**, select this repository and its production branch, and set:
+
+- Build command: `npm run build`
+- Deploy command: `npm run deploy:worker`
+
+In the Worker’s **Settings → Variables and Secrets**, add runtime variables `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`. In **Workers Builds → Settings → Build**, add build variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. Use the same Supabase project URL and publishable key as the local `.env`; the publishable key is intended for public client use. Never add a Supabase secret or service-role key to either location.
+
+The generated Worker enables `nodejs_compat` for the server runtime. After deployment, set the production domain as the Supabase Auth Site URL and allow the deployed domain’s auth redirect URL. Test sign-in, checkout, order tracking, and the admin pages at the deployed URL. Cloudflare’s Free plan has usage limits; Supabase’s database and auth plan is separate.
 
 ## Build with Lovable
 

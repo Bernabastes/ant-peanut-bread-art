@@ -25,9 +25,9 @@ export function useSettings() {
   return useSuspenseQuery(settingsQuery).data;
 }
 
-export function formatMoney(cents: number, currency = "KES") {
+export function formatMoney(cents: number, currency = "ETB") {
   try {
-    return new Intl.NumberFormat("en-KE", { style: "currency", currency }).format(cents / 100);
+    return new Intl.NumberFormat("am-ET", { style: "currency", currency }).format(cents / 100);
   } catch {
     return `${currency} ${(cents / 100).toFixed(2)}`;
   }

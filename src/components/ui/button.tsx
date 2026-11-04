@@ -18,8 +18,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         honey:
           "rounded-full bg-honey text-honey-foreground font-semibold shadow-soft hover:-translate-y-0.5 hover:shadow-lift transition-all",
-        brand:
-          "rounded-full bg-chocolate text-cream font-semibold hover:bg-primary transition-all",
+        brand: "rounded-full bg-chocolate text-cream font-semibold hover:bg-primary transition-all",
         soft: "rounded-full border border-chocolate/20 bg-card/60 text-chocolate backdrop-blur hover:bg-card",
       },
       size: {

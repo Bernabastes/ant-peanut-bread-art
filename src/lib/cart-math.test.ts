@@ -9,7 +9,14 @@ const variants = [
 
 describe("cart totals", () => {
   it("adds line totals and the delivery fee", () => {
-    const t = cartTotals([{ variantId: "a", quantity: 2 }, { variantId: "b", quantity: 1 }], variants, 20000);
+    const t = cartTotals(
+      [
+        { variantId: "a", quantity: 2 },
+        { variantId: "b", quantity: 1 },
+      ],
+      variants,
+      20000,
+    );
     expect(t).toEqual({ subtotal: 190000, delivery: 20000, total: 210000 });
   });
   it("ignores unavailable products", () => {

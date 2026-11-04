@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Placeholder illustration of a creamy peanut butter jar. Replace with a photograph of the real jar.">
+  <rect width="800" height="800" fill="#FFF8EC"/>
+  <ellipse cx="400" cy="690" rx="180" ry="28" fill="#352116" opacity="0.12"/>
+  <g>
+    <rect x="318" y="118" width="164" height="46" rx="10" fill="#E9D2AD"/>
+    <rect x="338" y="96" width="124" height="36" rx="8" fill="#6B3F24"/>
+    <path d="M250 210 h300 c18 0 28 16 24 34 l-36 390 c-4 40-28 62-68 62 H330 c-40 0-64-22-68-62 l-36-390 c-4-18 6-34 24-34z" fill="#F4E7D2" stroke="#E9D2AD" stroke-width="6"/>
+    <path d="M268 248 h264 l-30 360 c-2 22-14 34-32 34 H330 c-18 0-30-12-32-34z" fill="#D99A36"/>
+    <path d="M300 300 c40-28 90-18 140 8 c30 16 70 10 96-8 v40 c-40 30-90 18-150-6 c-36-14-70-8-86 4z" fill="#E8B85A" opacity="0.7"/>
+    <path d="M286 230 h18 c8 80 10 220 4 360" stroke="#FFFFFF" stroke-width="10" opacity="0.35" fill="none" stroke-linecap="round"/>
+    <rect x="292" y="360" width="216" height="150" rx="8" fill="#F6E6C8"/>
+    <text x="400" y="418" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#352116">Ant Peanut</text>
+    <text x="400" y="452" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#6B3F24">Creamy</text>
+    <text x="400" y="484" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#697A52">Placeholder art</text>
+  </g>
+</svg>

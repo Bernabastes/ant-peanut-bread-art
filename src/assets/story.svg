@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Illustration of peanut butter spread on toast">
+  <rect width="800" height="1000" fill="#F3E2C4"/>
+  <ellipse cx="400" cy="860" rx="260" ry="36" fill="#352116" opacity="0.1"/>
+  <g transform="rotate(-6 400 520)">
+    <path d="M150 280 C150 180 230 130 320 150 C370 100 470 100 520 150 C610 130 690 180 690 280 L670 760 Q660 820 600 820 L230 820 Q170 820 180 760 Z" fill="#8A5A32"/>
+    <path d="M190 310 C190 220 260 180 330 196 C372 156 458 156 500 196 C570 180 640 220 640 310 L624 740 Q616 784 568 784 L250 784 Q202 784 210 740 Z" fill="#F6E2C0"/>
+    <path d="M220 360 C300 320 420 390 610 340 L600 700 C500 760 320 720 230 690 Z" fill="#D99A36"/>
+    <path d="M250 430 C340 400 460 470 580 420" stroke="#E8B85A" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <path d="M240 540 C360 500 470 580 590 530" stroke="#C9842A" stroke-width="14" fill="none" stroke-linecap="round" opacity="0.7"/>
+    <ellipse cx="400" cy="500" rx="90" ry="52" fill="#E2A84A"/>
+    <path d="M350 480 C380 460 430 462 460 478" stroke="#FFF8EC" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.8"/>
+  </g>
+  <g transform="translate(470 250) rotate(18)">
+    <rect x="0" y="8" width="210" height="22" rx="11" fill="#C4A574"/>
+    <rect x="-80" y="0" width="120" height="38" rx="8" fill="#E7D3B0" stroke="#C4A574"/>
+    <rect x="-70" y="8" width="100" height="10" rx="5" fill="#D99A36"/>
+  </g>
+</svg>

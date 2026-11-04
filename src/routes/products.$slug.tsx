@@ -4,18 +4,20 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { stockLabel } from "@/components/ProductCard";
+import { resolveProductImage } from "@/lib/images";
 import { catalogQuery, formatMoney, useCatalog, useSettings } from "@/lib/queries";
 import { useCart } from "@/lib/cart";
 import { clampQty } from "@/lib/cart-math";
+import type { RouterContext } from "@/lib/router-context";
 
 export const Route = createFileRoute("/products/$slug")({
-  loader: async ({ context, params }) => {
+  loader: async ({ context, params }: { context: RouterContext; params: { slug: string } }) => {
     const c = await context.queryClient.ensureQueryData(catalogQuery);
     const p = c.products.find((x) => x.slug === params.slug);
     if (!p) throw notFound();
     return { name: p.name, desc: p.short_description };
   },
-  head: ({ loaderData }) => ({
+  head: ({ loaderData }: { loaderData?: { name: string; desc: string } }) => ({
     meta: loaderData
       ? [
           { title: `${loaderData.name} — Ant Peanut` },
@@ -29,7 +31,9 @@ export const Route = createFileRoute("/products/$slug")({
   notFoundComponent: () => (
     <div className="py-32 text-center">
       <h1 className="text-3xl font-bold">Product not found</h1>
-      <Link to="/shop" className="mt-4 inline-block underline">Back to shop</Link>
+      <Link to="/shop" className="mt-4 inline-block underline">
+        Back to shop
+      </Link>
     </div>
   ),
   component: ProductPage,
@@ -39,7 +43,9 @@ function Info({ title, value }: { title: string; value: string | null }) {
   return (
     <div className="border-t py-4">
       <h3 className="font-sans text-sm font-semibold uppercase tracking-wider">{title}</h3>
-      <p className="mt-1 text-sm text-muted-foreground">{value || "To be provided by Ant Peanut."}</p>
+      <p className="mt-1 text-sm text-muted-foreground">
+        {value || "To be provided by Ant Peanut."}
+      </p>
     </div>
   );
 }
@@ -66,21 +72,43 @@ function ProductPage() {
       name: x.label,
       price: (x.price_cents / 100).toFixed(2),
       priceCurrency: settings.currency,
-      availability: x.is_available && x.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      availability:
+        x.is_available && x.stock > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
     })),
   };
 
   return (
     <div className="mx-auto grid max-w-7xl gap-12 px-4 py-14 md:grid-cols-2 md:px-8">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="overflow-hidden rounded-[2rem] bg-muted shadow-soft">
-        {product.image_url && <img src={product.image_url} alt={`${product.name} jar`} width={1024} height={1024} className="aspect-square w-full object-cover" />}
+        <img
+          src={resolveProductImage(product.image_url)}
+          alt={`${product.name} jar. Illustrated placeholder until a photograph of the real jar is added.`}
+          width={800}
+          height={800}
+          className="aspect-square w-full object-cover"
+        />
       </div>
       <div className="reveal">
-        <Link to="/shop" className="text-sm text-muted-foreground hover:text-chocolate">← Shop</Link>
-        {product.texture && <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-leaf">{product.texture}</p>}
+        <Link to="/shop" className="text-sm text-muted-foreground hover:text-chocolate">
+          ← Shop
+        </Link>
+        {product.texture && (
+          <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-leaf">
+            {product.texture}
+          </p>
+        )}
         <h1 className="mt-2 text-4xl font-bold md:text-5xl">{product.name}</h1>
-        {v && <p className="mt-4 text-3xl font-semibold">{formatMoney(v.price_cents, settings.currency)}</p>}
+        {v && (
+          <p className="mt-4 text-3xl font-semibold">
+            {formatMoney(v.price_cents, settings.currency)}
+          </p>
+        )}
         <p className="mt-5 text-lg text-muted-foreground">{product.description}</p>
 
         <div className="mt-8">
@@ -106,9 +134,27 @@ function ProductPage() {
 
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <div className="flex items-center rounded-full border bg-card">
-            <Button variant="ghost" size="icon" className="rounded-full" aria-label="Decrease quantity" onClick={() => setQty((q) => Math.max(1, q - 1))}><Minus /></Button>
-            <span className="w-10 text-center font-semibold" aria-live="polite">{qty}</span>
-            <Button variant="ghost" size="icon" className="rounded-full" aria-label="Increase quantity" onClick={() => v && setQty((q) => clampQty(q + 1, v.stock))}><Plus /></Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              aria-label="Decrease quantity"
+              onClick={() => setQty((q) => Math.max(1, q - 1))}
+            >
+              <Minus />
+            </Button>
+            <span className="w-10 text-center font-semibold" aria-live="polite">
+              {qty}
+            </span>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              aria-label="Increase quantity"
+              onClick={() => v && setQty((q) => clampQty(q + 1, v.stock))}
+            >
+              <Plus />
+            </Button>
           </div>
           <Button
             variant="honey"
@@ -116,8 +162,17 @@ function ProductPage() {
             disabled={!canBuy}
             onClick={() => {
               if (!v) return;
-              add({ variantId: v.id, slug: product.slug, name: product.name, label: v.label, image: product.image_url, quantity: qty });
-              toast.success(`${qty} × ${product.name} (${v.label}) added`, { action: { label: "View cart", onClick: () => (window.location.href = "/cart") } });
+              add({
+                variantId: v.id,
+                slug: product.slug,
+                name: product.name,
+                label: v.label,
+                image: resolveProductImage(product.image_url),
+                quantity: qty,
+              });
+              toast.success(`${qty} × ${product.name} (${v.label}) added`, {
+                action: { label: "View cart", onClick: () => (window.location.href = "/cart") },
+              });
             }}
           >
             {canBuy ? "Add to Cart" : "Out of stock"}
@@ -127,8 +182,20 @@ function ProductPage() {
         <div className="mt-8 flex gap-3 rounded-2xl bg-accent p-5 text-sm">
           <Truck className="h-5 w-5 shrink-0 text-primary" />
           <div>
-            {settings.delivery_enabled && <p>Home delivery{settings.delivery_fee_cents ? ` · ${formatMoney(settings.delivery_fee_cents, settings.currency)}` : ""}. {settings.delivery_info}</p>}
-            {settings.pickup_enabled && <p className="mt-1">Pickup available{settings.pickup_location ? ` at ${settings.pickup_location}` : ""}.</p>}
+            {settings.delivery_enabled && (
+              <p>
+                Home delivery
+                {settings.delivery_fee_cents
+                  ? ` · ${formatMoney(settings.delivery_fee_cents, settings.currency)}`
+                  : ""}
+                . {settings.delivery_info}
+              </p>
+            )}
+            {settings.pickup_enabled && (
+              <p className="mt-1">
+                Pickup available{settings.pickup_location ? ` at ${settings.pickup_location}` : ""}.
+              </p>
+            )}
             <p className="mt-1 font-medium">Pay in person — no card needed.</p>
           </div>
         </div>

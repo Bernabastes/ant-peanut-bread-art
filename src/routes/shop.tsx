@@ -4,24 +4,43 @@ import { useMemo } from "react";
 import { ProductCard } from "@/components/ProductCard";
 import { Input } from "@/components/ui/input";
 import { catalogQuery, useCatalog, useSettings } from "@/lib/queries";
+import type { RouterContext } from "@/lib/router-context";
 
-type ShopSearch = { q?: string | undefined; cat?: string | undefined; sort?: "name" | "price-asc" | "price-desc" | undefined };
+type ShopSearch = {
+  q?: string | undefined;
+  cat?: string | undefined;
+  size?: string | undefined;
+  texture?: string | undefined;
+  sort?: "name" | "price-asc" | "price-desc" | undefined;
+};
 
 export const Route = createFileRoute("/shop")({
   validateSearch: (s: Record<string, unknown>): ShopSearch => ({
     q: typeof s["q"] === "string" ? s["q"] : undefined,
     cat: typeof s["cat"] === "string" ? s["cat"] : undefined,
-    sort: s["sort"] === "name" || s["sort"] === "price-asc" || s["sort"] === "price-desc" ? s["sort"] : undefined,
+    size: typeof s["size"] === "string" ? s["size"] : undefined,
+    texture: typeof s["texture"] === "string" ? s["texture"] : undefined,
+    sort:
+      s["sort"] === "name" || s["sort"] === "price-asc" || s["sort"] === "price-desc"
+        ? s["sort"]
+        : undefined,
   }),
   head: () => ({
     meta: [
       { title: "Shop Peanut Butter — Ant Peanut" },
-      { name: "description", content: "Browse creamy and crunchy Ant Peanut peanut butter in different jar sizes." },
+      {
+        name: "description",
+        content: "Shop creamy Ant Peanut peanut butter in a 500 g jar.",
+      },
       { property: "og:title", content: "Shop Peanut Butter — Ant Peanut" },
-      { property: "og:description", content: "Creamy and crunchy peanut butter jars. Order online, pay in person." },
+      {
+        property: "og:description",
+        content: "Creamy peanut butter in a 500 g jar. Order online, pay in person.",
+      },
     ],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(catalogQuery),
+  loader: ({ context }: { context: RouterContext }) =>
+    context.queryClient.ensureQueryData(catalogQuery),
   component: Shop,
 });
 
@@ -30,14 +49,17 @@ function Shop() {
   const settings = useSettings();
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/shop" });
-  const set = (patch: Partial<ShopSearch>) => navigate({ search: (s) => ({ ...s, ...patch }), replace: true });
+  const set = (patch: Partial<ShopSearch>) =>
+    navigate({ search: (s: ShopSearch) => ({ ...s, ...patch }), replace: true });
 
   const list = useMemo(() => {
     const q = (search.q ?? "").toLowerCase();
     let l = products.filter(
       (p) =>
         (!q || p.name.toLowerCase().includes(q) || p.short_description.toLowerCase().includes(q)) &&
-        (!search.cat || p.category?.slug === search.cat),
+        (!search.cat || p.category?.slug === search.cat) &&
+        (!search.size || p.variants.some((v) => v.label === search.size)) &&
+        (!search.texture || p.texture === search.texture),
     );
     const minPrice = (p: (typeof l)[number]) => Math.min(...p.variants.map((v) => v.price_cents));
     if (search.sort === "name") l = [...l].sort((a, b) => a.name.localeCompare(b.name));
@@ -46,12 +68,17 @@ function Shop() {
     return l;
   }, [products, search]);
 
+  const sizes = [...new Set(products.flatMap((p) => p.variants.map((v) => v.label)))];
+  const textures = [...new Set(products.map((p) => p.texture).filter((t): t is string => !!t))];
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 md:px-8">
       <h1 className="text-5xl font-bold md:text-6xl">The Shop</h1>
-      <p className="mt-3 text-lg text-muted-foreground">Every jar, every size. Pay in person when you receive it.</p>
+      <p className="mt-3 text-lg text-muted-foreground">
+        Creamy peanut butter in a 500 g jar. Pay in person when you receive it.
+      </p>
 
-      <div className="mt-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="mt-10 flex flex-col gap-4 md:flex-row md:flex-wrap md:items-center md:justify-between">
         <div className="flex flex-wrap gap-2">
           {[{ slug: undefined, name: "All" }, ...categories].map((c) => (
             <button
@@ -63,11 +90,49 @@ function Shop() {
             </button>
           ))}
         </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => set({ size: undefined })}
+            className={`rounded-full border px-4 py-2 text-sm ${!search.size ? "border-chocolate bg-chocolate text-cream" : "bg-card"}`}
+          >
+            Any size
+          </button>
+          {sizes.map((size) => (
+            <button
+              key={size}
+              onClick={() => set({ size })}
+              className={`rounded-full border px-4 py-2 text-sm ${search.size === size ? "border-chocolate bg-chocolate text-cream" : "bg-card"}`}
+            >
+              {size}
+            </button>
+          ))}
+          <button
+            onClick={() => set({ texture: undefined })}
+            className={`rounded-full border px-4 py-2 text-sm ${!search.texture ? "border-chocolate bg-chocolate text-cream" : "bg-card"}`}
+          >
+            Any texture
+          </button>
+          {textures.map((texture) => (
+            <button
+              key={texture}
+              onClick={() => set({ texture })}
+              className={`rounded-full border px-4 py-2 text-sm ${search.texture === texture ? "border-chocolate bg-chocolate text-cream" : "bg-card"}`}
+            >
+              {texture}
+            </button>
+          ))}
+        </div>
         <div className="flex gap-2">
           <label className="relative">
             <span className="sr-only">Search products</span>
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input autoFocus={search.q !== undefined} value={search.q ?? ""} onChange={(e) => set({ q: e.target.value || undefined })} placeholder="Search…" className="h-10 w-48 rounded-full bg-card pl-9" />
+            <Input
+              autoFocus={search.q !== undefined}
+              value={search.q ?? ""}
+              onChange={(e) => set({ q: e.target.value || undefined })}
+              placeholder="Search…"
+              className="h-10 w-48 rounded-full bg-card pl-9"
+            />
           </label>
           <label>
             <span className="sr-only">Sort</span>
@@ -89,7 +154,9 @@ function Shop() {
         <p className="mt-16 text-center text-muted-foreground">No products match your search.</p>
       ) : (
         <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {list.map((p) => <ProductCard key={p.id} product={p} currency={settings.currency} />)}
+          {list.map((p) => (
+            <ProductCard key={p.id} product={p} currency={settings.currency} />
+          ))}
         </div>
       )}
     </div>

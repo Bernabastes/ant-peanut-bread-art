@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, Search, ShoppingBag, X } from "lucide-react";
+import { Instagram, Menu, Search, ShoppingBag, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
 import { Button } from "./ui/button";
@@ -12,7 +12,13 @@ const nav = [
   { to: "/contact", label: "Contact" },
 ] as const;
 
-export function SiteHeader({ announcement }: { announcement: string }) {
+export function SiteHeader({
+  announcement,
+  instagramUrl,
+}: {
+  announcement: string;
+  instagramUrl?: string | null;
+}) {
   const { count } = useCart();
   const [open, setOpen] = useState(false);
   const [bump, setBump] = useState(false);
@@ -20,21 +26,22 @@ export function SiteHeader({ announcement }: { announcement: string }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
     if (count > prev.current) {
       setBump(true);
-      const t = setTimeout(() => setBump(false), 450);
-      return () => clearTimeout(t);
+      timer = setTimeout(() => setBump(false), 450);
     }
     prev.current = count;
-    return undefined;
+    return () => {
+      if (timer !== undefined) clearTimeout(timer);
+    };
   }, [count]);
-  useEffect(() => {
-    prev.current = count;
-  });
 
   return (
     <header className="sticky top-0 z-40">
-      <div className="bg-chocolate px-4 py-2 text-center text-xs tracking-wide text-cream">{announcement}</div>
+      <div className="bg-chocolate px-4 py-2 text-center text-xs tracking-wide text-cream">
+        {announcement}
+      </div>
       <div className="border-b bg-background/85 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-8">
           <Logo />
@@ -52,9 +59,21 @@ export function SiteHeader({ announcement }: { announcement: string }) {
             ))}
           </nav>
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" aria-label="Search products" onClick={() => navigate({ to: "/shop", search: { q: "" } })}>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Search products"
+              onClick={() => navigate({ to: "/shop", search: { q: "" } })}
+            >
               <Search />
             </Button>
+            {instagramUrl ? (
+              <Button variant="ghost" size="icon" asChild>
+                <a href={instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram">
+                  <Instagram />
+                </a>
+              </Button>
+            ) : null}
             <Button variant="ghost" size="icon" asChild>
               <Link to="/cart" aria-label={`Cart, ${count} items`} className="relative">
                 <ShoppingBag />
@@ -70,7 +89,13 @@ export function SiteHeader({ announcement }: { announcement: string }) {
             <Button variant="honey" className="ml-2 hidden sm:inline-flex" asChild>
               <Link to="/shop">Shop Now</Link>
             </Button>
-            <Button variant="ghost" size="icon" className="md:hidden" aria-label={open ? "Close menu" : "Open menu"} onClick={() => setOpen(!open)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              aria-label={open ? "Close menu" : "Open menu"}
+              onClick={() => setOpen(!open)}
+            >
               {open ? <X /> : <Menu />}
             </Button>
           </div>
@@ -78,11 +103,20 @@ export function SiteHeader({ announcement }: { announcement: string }) {
         {open && (
           <nav className="border-t bg-background px-4 py-4 md:hidden" aria-label="Mobile">
             {nav.map((n) => (
-              <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="block rounded-lg px-3 py-3 font-display text-lg text-chocolate hover:bg-muted">
+              <Link
+                key={n.to}
+                to={n.to}
+                onClick={() => setOpen(false)}
+                className="block rounded-lg px-3 py-3 font-display text-lg text-chocolate hover:bg-muted"
+              >
                 {n.label}
               </Link>
             ))}
-            <Link to="/order-status" onClick={() => setOpen(false)} className="block rounded-lg px-3 py-3 text-sm text-muted-foreground hover:bg-muted">
+            <Link
+              to="/order-status"
+              onClick={() => setOpen(false)}
+              className="block rounded-lg px-3 py-3 text-sm text-muted-foreground hover:bg-muted"
+            >
               Check order status
             </Link>
           </nav>
