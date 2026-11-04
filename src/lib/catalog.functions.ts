@@ -1,10 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { getServerEnvironmentVariable } from "@/integrations/supabase/server-env";
 
 function publicClient() {
-  const url = process.env["SUPABASE_URL"]!;
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
+  const url = getServerEnvironmentVariable("SUPABASE_URL");
+  const key = getServerEnvironmentVariable("SUPABASE_PUBLISHABLE_KEY");
+  if (!url || !key) {
+    const missing = [
+      ...(!url ? ["SUPABASE_URL"] : []),
+      ...(!key ? ["SUPABASE_PUBLISHABLE_KEY"] : []),
+    ];
+    throw new Error(`Missing Supabase runtime variable(s): ${missing.join(", ")}`);
+  }
   return createClient<Database>(url, key, {
     auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
     global: {

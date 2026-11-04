@@ -51,7 +51,7 @@ This project builds with Nitro's Cloudflare Workers preset. In Cloudflare, go to
 - Build command: `npm run build`
 - Deploy command: `npm run deploy:worker`
 
-In the Worker’s **Settings → Variables and Secrets**, add runtime variables `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`. In **Workers Builds → Settings → Build**, add build variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. Use the same Supabase project URL and publishable key as the local `.env`; the publishable key is intended for public client use. Never add a Supabase secret or service-role key to either location.
+In **Workers Builds → Settings → Build**, add build variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. The server uses these as a fallback if a deployment replaces dashboard-only runtime variables. You can also add `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` under the Worker’s **Settings → Variables and Secrets** for production runtime configuration. Use the same Supabase project URL and publishable key as the local `.env`; the publishable key is intended for public client use. Never add a Supabase secret or service-role key to either location.
 
 The generated Worker enables `nodejs_compat` for the server runtime. After deployment, set the production domain as the Supabase Auth Site URL and allow the deployed domain’s auth redirect URL. Test sign-in, checkout, order tracking, and the admin pages at the deployed URL. Cloudflare’s Free plan has usage limits; Supabase’s database and auth plan is separate.
 
