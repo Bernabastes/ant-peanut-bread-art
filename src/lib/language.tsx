@@ -368,6 +368,20 @@ const amharic: Record<string, string> = {
     "ክሬሚ እስኪሆን ድረስ ይፍጩ። ማሽኑ ኦቾሎኒዎቹን ወደምንወደው ለስላሳና ክሬሚ ይዘት ይፈጫል።",
   "Keep it pure. We do not add sugar, water, or anything else—just peanuts.":
     "ንጹህ ያድርጉት። ስኳር፣ ውሃ ወይም ሌላ ነገር አንጨምርም — ኦቾሎኒ ብቻ።",
+  "From peanut to jar": "ከኦቾሎኒ ወደ ማሰሮ",
+  "Peanut Grind Simulator": "የኦቾሎኒ መፍጫ ሙከራ",
+  "Hold the button and watch fresh peanuts become creamy Ant Peanut butter.":
+    "ቁልፉን ተጭነው ይያዙ፤ ትኩስ ኦቾሎኒ ወደ ክሬሚ አንት ፒነት ቅቤ ሲቀየር ይመልከቱ።",
+  "Raw peanuts": "ጥሬ ኦቾሎኒ",
+  "The grinder": "መፍጫው",
+  "Your jar": "የእርስዎ ማሰሮ",
+  "Hold to Grind!": "ለመፍጨት ተጭነው ይያዙ!",
+  "Keep Grinding!": "መፍጨቱን ይቀጥሉ!",
+  "Grinding… keep holding!": "በመፍጨት ላይ… ተጭነው ይቆዩ!",
+  "Keep holding to fill your jar.": "ማሰሮዎን ለመሙላት ተጭነው ይቆዩ።",
+  "Jar fill level": "የማሰሮ ሙሌት መጠን",
+  "Freshly ground! Ready to order yours?": "አሁን የተፈጨ! የእርስዎን ለማዘዝ ዝግጁ ነዎት?",
+  "Shop Peanut Butter": "የኦቾሎኒ ቅቤ ይግዙ",
   "Pack into jars. We put the creamy peanut butter into jars, ready for you to enjoy.":
     "በማሰሮ ያሽጉ። ክሬሚውን የኦቾሎኒ ቅቤ ለእርስዎ ዝግጁ በሆኑ ማሰሮዎች እናስቀምጣለን።",
   "(Map)": "(ካርታ)",

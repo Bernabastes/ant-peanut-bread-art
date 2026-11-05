@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { InfoPage } from "@/components/InfoPage";
+import { PeanutGrindSimulator } from "@/components/PeanutGrindSimulator";
 import { settingsQuery, useSettings } from "@/lib/queries";
 import type { RouterContext } from "@/lib/router-context";
 
@@ -62,6 +63,7 @@ function Page() {
       ) : (
         <p className="whitespace-pre-line text-lg">{story}</p>
       )}
+      <PeanutGrindSimulator />
     </InfoPage>
   );
 }
