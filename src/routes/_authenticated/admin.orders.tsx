@@ -54,7 +54,9 @@ function Orders() {
         >
           <option value="">All statuses</option>
           {STATUSES.map((s) => (
-            <option key={s}>{s}</option>
+            <option key={s} value={s}>
+              {s}
+            </option>
           ))}
         </select>
         <select
@@ -64,8 +66,8 @@ function Orders() {
           aria-label="Payment"
         >
           <option value="">Any payment</option>
-          <option>Unpaid</option>
-          <option>Paid</option>
+          <option value="Unpaid">Unpaid</option>
+          <option value="Paid">Paid</option>
         </select>
         <input
           type="date"

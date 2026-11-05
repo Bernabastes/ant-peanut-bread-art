@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveProductImage } from "@/lib/images";
 import { formatMoney, settingsQuery } from "@/lib/queries";
+import { useLanguage } from "@/lib/language-context";
 
 export const Route = createFileRoute("/_authenticated/admin/products")({
   component: ProductsAdmin,
@@ -170,6 +171,7 @@ function ProductForm({
   currency: string;
   onDone: () => void;
 }) {
+  const { language } = useLanguage();
   const [name, setName] = useState(product?.name ?? "");
   const [slug, setSlug] = useState(product?.slug ?? "");
   const [short, setShort] = useState(product?.short_description ?? "");
@@ -324,7 +326,11 @@ function ProductForm({
   }
 
   async function remove() {
-    if (!product || !confirm(`Delete ${product.name}? Past orders keep their item names.`)) return;
+    const confirmation =
+      language === "am"
+        ? `የ${product?.name ?? ""} ምርትን ሰርዝ? ቀደም ያሉ ትዕዛዞች የምርት ስሞቻቸውን ይጠብቃሉ።`
+        : `Delete ${product?.name ?? ""}? Past orders keep their item names.`;
+    if (!product || !confirm(confirmation)) return;
     const { error } = await supabase.from("products").delete().eq("id", product.id);
     if (error) {
       toast.error(error.message);
@@ -379,8 +385,8 @@ function ProductForm({
             onChange={(e) => setTexture(e.target.value)}
             className="h-9 w-full rounded-md border bg-background px-3 text-sm"
           >
-            <option>Creamy</option>
-            <option>Smooth</option>
+            <option value="Creamy">Creamy</option>
+            <option value="Smooth">Smooth</option>
           </select>
         </div>
         <div>

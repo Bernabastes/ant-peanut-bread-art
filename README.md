@@ -6,6 +6,8 @@ The homepage hero is an illustration of peanut butter landing on toast. To use r
 
 The store sells creamy peanut butter in 500 g jars, priced in Ethiopian birr (ETB). Jar pictures in `public/images/` are illustrated placeholders. Replace them from Admin → Products with photographs of your real jar. Sample prices already stored in the database are placeholders too. Example products start unpublished and with zero stock; set the real price, stock, product information, and photo in Admin → Products before publishing or taking orders.
 
+The interface is available in English and Amharic. Use the language control at the top of the storefront (or in the admin/sign-in area); your choice is saved in that browser. Product names and descriptions, store settings, and other custom content remain as entered.
+
 ## Run locally
 
 ```sh

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
 import { Button } from "./ui/button";
 import { useCart } from "@/lib/cart";
+import { LanguageToggle } from "@/lib/language";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -39,8 +40,11 @@ export function SiteHeader({
 
   return (
     <header className="sticky top-0 z-40">
-      <div className="bg-chocolate px-4 py-2 text-center text-xs tracking-wide text-cream">
-        {announcement}
+      <div className="bg-chocolate px-4 py-2 text-xs tracking-wide text-cream">
+        <div className="mx-auto flex max-w-7xl items-center gap-2 md:px-8">
+          <span className="flex-1 text-center">{announcement}</span>
+          <LanguageToggle className="border-transparent bg-cream text-chocolate" />
+        </div>
       </div>
       <div className="border-b bg-background/85 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-8">

@@ -5,6 +5,7 @@ import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
+import { LanguageToggle } from "@/lib/language";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin — Ant Peanut" }, { name: "robots", content: "noindex" }] }),
@@ -38,6 +39,9 @@ function AdminLayout() {
   if (accessError || !isAdmin)
     return (
       <div className="grid min-h-screen place-items-center px-4 text-center">
+        <div className="fixed right-4 top-4">
+          <LanguageToggle />
+        </div>
         <div className="max-w-lg">
           <h1 className="text-2xl font-bold">
             {accessError ? "Unable to verify admin access" : "No admin access"}
@@ -65,7 +69,10 @@ function AdminLayout() {
   return (
     <div className="min-h-screen md:grid md:grid-cols-[240px_1fr]">
       <aside className="border-b bg-sidebar p-4 md:min-h-screen md:border-b-0 md:border-r">
-        <Logo />
+        <div className="flex items-center justify-between gap-2">
+          <Logo />
+          <LanguageToggle />
+        </div>
         <nav className="mt-6 flex gap-1 overflow-x-auto md:flex-col">
           {links.map((l) => (
             <Link

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import { LanguageToggle } from "@/lib/language";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -48,6 +49,9 @@ function AuthPage() {
         onSubmit={submit}
         className="w-full max-w-sm space-y-4 rounded-3xl bg-card p-8 shadow-lift"
       >
+        <div className="flex justify-end">
+          <LanguageToggle />
+        </div>
         <Logo />
         <h1 className="text-2xl font-bold">Owner sign in</h1>
         <div>

@@ -25,6 +25,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { RouterContext } from "@/lib/router-context";
+import { LanguageProvider, LocalizedContent } from "@/lib/language";
 
 function NotFoundComponent() {
   return (
@@ -161,10 +162,14 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <HydrationBoundary state={dehydratedState}>
         <CartProvider>
-          <StoreChrome settings={settings}>
-            <Outlet />
-          </StoreChrome>
-          <Toaster position="bottom-right" />
+          <LanguageProvider>
+            <LocalizedContent>
+              <StoreChrome settings={settings}>
+                <Outlet />
+              </StoreChrome>
+              <Toaster position="bottom-right" />
+            </LocalizedContent>
+          </LanguageProvider>
         </CartProvider>
       </HydrationBoundary>
     </QueryClientProvider>
