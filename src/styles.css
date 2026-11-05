@@ -133,18 +133,52 @@
 }
 
 @utility bg-hero {
-  background:
-    radial-gradient(
-      120% 90% at 80% 40%,
-      color-mix(in oklab, oklch(0.93 0.06 78) 88%, transparent) 0%,
-      color-mix(in oklab, var(--cream) 88%, transparent) 55%
-    );
+  background: radial-gradient(
+    120% 90% at 80% 40%,
+    color-mix(in oklab, oklch(0.93 0.06 78) 88%, transparent) 0%,
+    color-mix(in oklab, var(--cream) 88%, transparent) 55%
+  );
 }
 @utility shadow-soft {
   box-shadow: var(--shadow-soft);
 }
 @utility shadow-lift {
   box-shadow: var(--shadow-lift);
+}
+
+.pickup-map__trail {
+  z-index: 1;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.pickup-map__trail-line {
+  fill: none;
+  stroke: var(--crust);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 8 13;
+  opacity: 0.78;
+  animation: pickup-trail-dash 14s linear infinite;
+}
+
+.pickup-map__ant {
+  font-size: 30px;
+  pointer-events: none;
+}
+
+.pickup-map__ant--second {
+  font-size: 25px;
+}
+
+.pickup-map__marker {
+  pointer-events: auto;
+}
+
+@keyframes pickup-trail-dash {
+  to {
+    stroke-dashoffset: -84;
+  }
 }
 
 @utility reveal {
@@ -247,7 +281,9 @@
 }
 
 .peanut-simulator__jar-fill {
-  transition: y 0.12s linear, height 0.12s linear;
+  transition:
+    y 0.12s linear,
+    height 0.12s linear;
 }
 
 .peanut-simulator__confetti {
@@ -443,6 +479,12 @@
 
 @media (prefers-reduced-motion: reduce) {
   .peanut-rain {
+    display: none;
+  }
+  .pickup-map__trail-line {
+    animation: none;
+  }
+  .pickup-map__ant {
     display: none;
   }
   .peanut-simulator__machine,
