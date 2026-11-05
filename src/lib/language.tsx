@@ -255,7 +255,6 @@ const amharic: Record<string, string> = {
   "Ingredients and allergen details are listed on each product page.":
     "የግብዓቶችና የአለርጂ መረጃ በእያንዳንዱ የምርት ገጽ ላይ ተዘርዝሯል።",
   "Local Pickup": "በአቅራቢያ ማንሳት",
-  "Our story": "የእኛ ታሪክ",
   "Pickup location": "የማንሻ ቦታ",
   "Pickup location is shared when we confirm your order.": "ትዕዛዝዎን ስናረጋግጥ የማንሻ ቦታውን እናሳውቅዎታለን።",
   "We would love to hear from you.": "ከእርስዎ መስማት ደስ ይለናል።",

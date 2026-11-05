@@ -133,7 +133,12 @@
 }
 
 @utility bg-hero {
-  background: var(--gradient-hero);
+  background:
+    radial-gradient(
+      120% 90% at 80% 40%,
+      color-mix(in oklab, oklch(0.93 0.06 78) 88%, transparent) 0%,
+      color-mix(in oklab, var(--cream) 88%, transparent) 55%
+    );
 }
 @utility shadow-soft {
   box-shadow: var(--shadow-soft);
@@ -168,6 +173,51 @@
 }
 @utility animate-bump {
   animation: bump 0.4s ease-out;
+}
+
+.peanut-rain {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.peanut-rain__peanut {
+  position: absolute;
+  top: -3rem;
+  display: block;
+  opacity: 0;
+  color: var(--crust);
+  filter: saturate(0.82) sepia(0.14);
+  line-height: 1;
+  will-change: transform, opacity;
+  animation-name: peanut-rain-fall;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes peanut-rain-fall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -4vh, 0) rotate(var(--peanut-rotation));
+  }
+  10% {
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate3d(calc(var(--peanut-drift) * 0.55), 52vh, 0)
+      rotate(calc(var(--peanut-rotation) + 180deg));
+  }
+  90% {
+    opacity: 0.65;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--peanut-drift), 110vh, 0)
+      rotate(calc(var(--peanut-rotation) + 360deg));
+  }
 }
 
 /* ---------- Hero animation: peanut butter poured & spread on toast (8s loop) ---------- */
@@ -285,6 +335,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .peanut-rain {
+    display: none;
+  }
   .pb-stream,
   .pb-spoon {
     animation: none;

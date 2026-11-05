@@ -26,6 +26,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { RouterContext } from "@/lib/router-context";
 import { LanguageProvider, LocalizedContent } from "@/lib/language";
+import { PeanutRain } from "@/components/PeanutRain";
 
 function NotFoundComponent() {
   return (
@@ -123,7 +124,8 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <PeanutRain />
+        <div className="relative z-[1]">{children}</div>
         <Scripts />
       </body>
     </html>
